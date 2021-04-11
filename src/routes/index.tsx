@@ -1,8 +1,17 @@
 import React from 'react';
-import {View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 
-const src: React.FC = () => {
-  return <View />;
+import Header from '../components/Header';
+
+import Home from './Home';
+
+const Routes: React.FC = () => {
+  return (
+    <NavigationContainer>
+      <Header />
+      <Home />
+    </NavigationContainer>
+  );
 };
 
-export default src;
+export default Routes;
