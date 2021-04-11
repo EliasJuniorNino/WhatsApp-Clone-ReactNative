@@ -1,7 +1,12 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
+import {useSelector} from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import {State as ChatsState} from '../../store/reducers/chats';
+
+import Card from './Card';
 
 export interface ChatData {
   key: string;
@@ -18,61 +23,22 @@ export interface ChatData {
   notReaded: number;
 }
 
-import data from './data';
-
 const Chats: React.FC = () => {
+  const chatsState = useSelector<{chats: ChatsState}, ChatsState>(
+    state => state?.chats,
+  );
+
   return (
     <View style={styles.container}>
       <FlatList
-        data={data}
+        data={chatsState?.data}
         keyExtractor={(_, i) => String(i)}
-        renderItem={({item}: {item: ChatData}) => (
-          <TouchableOpacity style={styles.cardContainer}>
-            <View style={styles.imageContainer}>
-              <Image source={{uri: item?.image}} style={styles.image} />
-            </View>
-            <View style={styles.lineView}>
-              <View style={styles.titleContainer}>
-                <Text style={styles.name}>{item?.name}</Text>
-                <Text
-                  style={item?.notReaded > 0 ? styles.timeGreen : styles.time}>
-                  {item?.time}
-                </Text>
-              </View>
-              <View style={styles.descriptionContainer}>
-                <Text style={styles.description} numberOfLines={1}>
-                  {item?.isGroup ? `${item?.lastMessage?.sender}: ` : ''}
-                  {item?.lastMessage?.type === 'message'
-                    ? item?.lastMessage?.data
-                    : 'Foto'}
-                </Text>
-
-                {item?.muted ? (
-                  <MaterialCommunityIcons
-                    style={styles.mutedicon}
-                    color="#787878"
-                    name="volume-variant-off"
-                    size={25}
-                  />
-                ) : null}
-
-                {item?.notReaded > 0 ? (
-                  <View style={styles.totalMessagesContainer}>
-                    <Text style={styles.totalMessagesText}>
-                      {item?.notReaded}
-                    </Text>
-                  </View>
-                ) : null}
-              </View>
-            </View>
-            <View />
-          </TouchableOpacity>
-        )}
+        renderItem={({item}: {item: ChatData}) => <Card item={item} />}
         style={styles.listContainer}
       />
 
       <MaterialCommunityIcons
-        style={styles.cameraIcon}
+        style={styles.messagesIcon}
         color="white"
         name="android-messages"
         size={25}
@@ -91,78 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 6,
   },
-  cardContainer: {
-    flexDirection: 'row',
-    margin: 5,
-  },
-  imageContainer: {
-    padding: 7,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: 65,
-    height: 65,
-    borderRadius: 65,
-  },
-  lineView: {
-    flex: 1,
-    marginLeft: 5,
-    borderBottomColor: '#eaeaea',
-    borderBottomWidth: 1,
-    paddingRight: 15,
-    justifyContent: 'center',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  name: {
-    color: '#222222',
-    fontWeight: 'bold',
-    fontSize: 17,
-  },
-  descriptionContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  description: {
-    flex: 1,
-    flexWrap: 'nowrap',
-    color: '#787878',
-    fontSize: 17,
-    marginRight: 5,
-    fontWeight: '900',
-  },
-  mutedicon: {
-    marginRight: 8,
-  },
-  time: {
-    color: '#787878',
-  },
-  timeGreen: {
-    color: '#09d261',
-    alignSelf: 'flex-start',
-  },
-  totalMessagesContainer: {
-    minWidth: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  totalMessagesText: {
-    backgroundColor: '#09d261',
-    color: '#daf5e2',
-    textAlignVertical: 'center',
-    textAlign: 'center',
-    padding: 2,
-    lineHeight: 22,
-    minHeight: 26,
-    minWidth: 26,
-    borderRadius: 26,
-  },
-  cameraIcon: {
+  messagesIcon: {
     position: 'absolute',
     padding: 20,
     backgroundColor: 'rgba(0,204,63, 0.95)',

@@ -3,28 +3,37 @@ import {View, StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useSelector} from 'react-redux';
 
 import CardAddStatus from './CardAddStatus';
 import RecentsList from './RecentsList';
 import ViewsList from './ViewsList';
 
+import {State as StatusState} from '../../store/reducers/status';
+
 export interface StatusData {
   key: string;
-  nome: string;
+  name: string;
   time: string;
   image: string;
   visualized_at?: string;
 }
 
-import data from './data';
-
 const Status: React.FC = () => {
+  const statusState = useSelector<{status: StatusState}, StatusState>(
+    state => state?.status,
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.listContainer}>
         <CardAddStatus />
-        <RecentsList data={data?.filter(item => !item.visualized_at)} />
-        <ViewsList data={data?.filter(item => item.visualized_at)} />
+        <RecentsList
+          data={statusState?.data?.filter(item => !item?.visualized_at)}
+        />
+        <ViewsList
+          data={statusState?.data?.filter(item => item?.visualized_at)}
+        />
       </ScrollView>
 
       <MaterialIcons

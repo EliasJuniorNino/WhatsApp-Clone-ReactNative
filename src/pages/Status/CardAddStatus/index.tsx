@@ -1,37 +1,38 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import {useSelector} from 'react-redux';
 
-interface UserData {
-  nome: string;
-  image: string;
-}
+import {State as UserState} from '../../../store/reducers/user';
 
-const user: UserData = {
-  nome: 'Elias Junior',
-  image: 'https://picsum.photos/600',
-};
+const Card: React.FC = () => {
+  const userState = useSelector<{user: UserState}, UserState>(
+    state => state?.user,
+  );
 
-const Card: React.FC = () => (
-  <TouchableOpacity style={styles.container}>
-    <View style={styles.imageContainer}>
-      <Image source={{uri: user?.image}} style={styles.image} />
-      <MaterialIcons
-        style={styles.addIcon}
-        name="add"
-        size={23}
-        color="white"
-      />
-    </View>
-    <View style={styles.lineView}>
-      <View style={styles.infoContainer}>
-        <Text style={styles.name}>{user?.nome}</Text>
-        <Text style={styles.description}>Toque para atualizar seu status</Text>
+  return (
+    <TouchableOpacity style={styles.container}>
+      <View style={styles.imageContainer}>
+        <Image source={{uri: userState?.image}} style={styles.image} />
+        <MaterialIcons
+          style={styles.addIcon}
+          name="add"
+          size={23}
+          color="white"
+        />
       </View>
-    </View>
-    <View />
-  </TouchableOpacity>
-);
+      <View style={styles.lineView}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.name}>{userState?.name}</Text>
+          <Text style={styles.description}>
+            Toque para atualizar seu status
+          </Text>
+        </View>
+      </View>
+      <View />
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -69,7 +70,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    // backgroundColor: 'red',
     paddingTop: 5,
   },
   infoContainer: {
